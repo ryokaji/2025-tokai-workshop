@@ -1,0 +1,87 @@
+---
+title: 用語集
+description: ""
+---
+
+import { Aside, Card } from "@astrojs/starlight/components";
+
+# 🔐 パスキー認証 用語集
+
+## 基本概念
+
+### 公開鍵暗号方式 (Public Key Cryptography)
+
+一対の鍵 (公開鍵と秘密鍵) を用いた暗号技術。
+
+### RP (Relying Party)
+
+認証を要求する Web サービス。例: Google、Amazon など。
+
+### クライアント (Client)
+
+認証操作を行うデバイスやソフトウェア。ブラウザ、アプリ、CLI など。
+
+### 認証器 (Authenticator)
+
+鍵ペアを生成・保持し、署名を行うデバイスまたはソフトウェア。
+
+スマートフォンやブラウザで実現されているもの、YubiKey などのハードウェアキー、Windows Hello や Touch ID などの OS 内蔵機能による実装が例として挙げられる。
+
+### 認証チャレンジ (Challenge)
+
+RP (Web サービス)が生成するランダムなデータで、秘密鍵による署名を要求する際に使用する。
+
+### 認証情報 (Credential)
+
+認証に使用される秘密鍵などの情報。パスキーの場合は鍵ペアが該当する。
+
+## 技術仕様・構成要素
+
+### FIDO2
+
+FIDO Alliance によるパスワードレス認証の国際標準。
+WebAuthn と CTAP2 の 2 つの仕様から構成される。
+
+### WebAuthn (Web Authentication API)
+
+W3C が策定した Web ブラウザ向け API。
+Web サイトが公開鍵ベースの認証を行うために利用される。
+
+### CTAP2 (Client to Authenticator Protocol 2)
+
+クライアント (ブラウザや OS) と認証器 (セキュリティキー等) との通信プロトコル。
+
+## 運用
+
+### 同期パスキー (Synced Passkey)
+
+Apple、Google、Microsoft などのクラウドを介して暗号化され、複数デバイス間で同期されるパスキー。
+
+### デバイス固定パスキー (device-bound passkey)
+
+クラウドに同期されず、特定のデバイスにのみ保存されるパスキー。
+
+<Aside>本ワークショップでは掘り下げません。</Aside>
+
+## 実装関連
+
+### RP ID (Relying Party ID)
+
+公開鍵を紐づけるドメイン識別子。通常は Web サイトのドメイン。
+
+### Origin (オリジン)
+
+ブラウザのセキュリティコンテキスト。
+プロトコル＋ドメイン＋ポートで構成される。
+
+### Credential ID (クレデンシャル ID)
+
+各パスキー (鍵ペア) を一意に識別する ID。RP 側が保持する。
+
+### Attestation
+
+認証器が正規のデバイスであることを証明する署名付き情報。パスキーの登録時に、RP に送信される。
+
+### Assertion
+
+認証器での認証時に返却される署名付きデータ。認証時にチャレンジと公開鍵を検証して本人確認が行われ、RP に送信される。

@@ -1,0 +1,66 @@
+---
+title: パスキー認証を試す
+description: ""
+---
+
+import {
+  Aside,
+  Card,
+  Code,
+  TabItem,
+  Tabs,
+} from "@astrojs/starlight/components";
+
+## プログラムの起動
+
+まずはローカル環境で動作を確認してみましょう。
+
+WebAuthn サーバを起動します。
+
+<Tabs>
+  <TabItem label="pip">
+    <Code
+      lang="bash"
+      code={`cd backend
+python main.py`}
+    ></Code>
+  </TabItem>
+  <TabItem label="uv">
+    <Code
+      lang="bash"
+      code={`cd backend
+uv run main.py`}
+    ></Code>
+  </TabItem>
+</Tabs>
+
+フロントエンドを起動します。
+
+```bash
+python -m http.server 5173 --directory ./frontend
+```
+
+内容は静的ファイルなので、 Python の `http` モジュールなどの簡易的な HTTP サーバであれば同様に動作します。
+
+ブラウザで [http://localhost:5173](http://localhost:5173) にアクセスします。
+ページが表示されていれば OK です。
+
+## 認証鍵の登録
+
+では認証鍵を登録してみましょう。 `🚪 Register` を押してみてください。
+Chrome からパスキーの作成が求められるので、認証鍵を保存します。完了すると `Authenticator registered!` と表示されます。
+
+保存が完了したら、 [chrome://password-manager/passwords](chrome://password-manager/passwords) にアクセスします。
+ドメインごとに保存した認証情報を確認することができます。
+
+期待動作として、 `localhost` ドメインに対して本日の日付で認証情報が保存されていることが確認できます。
+
+## 認証処理の実行
+
+アプリケーションからそのまま `🔐 Authenticate` を押してください。現時点では固定のユーザで認証を行うため、そのまま認証処理が実行されます。
+
+認証処理が成功すれば `User authenticated!` と表示されます。
+
+<Aside>
+  認証鍵の登録と認証処理が同一ページで行えてしまいますが、一般的には別ページで行います。
+</Aside>

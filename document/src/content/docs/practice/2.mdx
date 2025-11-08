@@ -1,0 +1,49 @@
+---
+title: 実装時のポイント
+description: ""
+---
+
+先ほどと今回とで別のプログラムとして起動させていますが、実装時のポイントをいくつか紹介します。
+
+## 登録
+
+登録処理においては、ログイン済みのユーザに対してのみ行えるようにします。
+もしそのような制限がないと、認証情報を持たない別のユーザで鍵登録を行えることとなり、なりすましが容易になってしまいます。
+
+認証処理を実装する場合は、通常は一般的なフレームワークの仕様に従ってください。
+ここでは Flask と Flask-Login を利用しているため、下記のようになっています。
+
+```diff lang=python
+@bp.route("/generate-registration-options", methods=["GET"])
++@login_required
+def register_options():
+    # ...
+
+@bp.route("/verify-registration", methods=["POST"])
++@login_required
+def register_verify():
+    # ...
+```
+
+## 認証
+
+検証処置が終わったタイミングでユーザの認証が完了しているため、システム側のログイン処理を実行します。
+
+Flask-Login を利用して下記のように実装例を紹介します。
+
+```diff lang=python
+@bp.route("/verify-authentication", methods=["POST"])
+def authenticate_verify():
+    body = request.json
+    # ...
+    try:
+        verification = verify_authentication_response(
+            # ...
+        )
+        session["challenge"] = None
+        session.clear()
++        login_user(user)
+        return jsonify({"status": "ok", "verified": verification.user_verified})
+    except Exception as e:
+        # ...
+```

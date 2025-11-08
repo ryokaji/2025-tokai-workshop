@@ -1,0 +1,46 @@
+---
+title: ソースコードの取得
+description: ""
+---
+
+import { Code, TabItem, Tabs } from "@astrojs/starlight/components";
+
+## ソースコードの取得
+
+ワークショップで利用するソースコードは GitHub リポジトリ から取得できます。
+
+```bash
+# TODO: リポジトリ URL を置き換えてください
+git clone https://github.com/your-repo.git
+cd your-repo
+```
+
+## クライアントの取得
+
+node.js 環境を用意していない場合、事前に用意したクライアントが利用できます。
+
+```bash
+# TODO: リポジトリ URL を置き換えてください
+git clone https://github.com/your-repo.git
+cd your-repo
+```
+
+## セットアップ
+
+<Tabs>
+  <TabItem label="pip">
+    <Code
+      lang="bash"
+      code={`python -m venv .venv --upgrade-deps
+source .venv/bin/activate
+pip install -e '.[dev]'`}
+    ></Code>
+  </TabItem>
+  <TabItem label="uv">
+    <Code
+      lang="bash"
+      code={`uv sync
+source .venv/bin/activate`}
+    ></Code>
+  </TabItem>
+</Tabs>

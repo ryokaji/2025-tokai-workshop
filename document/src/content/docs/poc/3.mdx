@@ -1,0 +1,88 @@
+---
+title: 認証処理のシーケンス
+description: ""
+---
+
+## シーケンス
+
+以下に認証処理の概要を示します。登録時の処理とおおまかな流れは似ていることがわかります。
+
+```plantuml
+@startuml
+title 認証シーケンス
+
+actor "User" as U
+participant "Authenticator" as A
+participant "Client" as B
+participant "RP" as S
+
+U -> B : 認証を開始
+B -> S : options を要求
+S -> S : challenge を作成
+
+S --> B : navigator.credentials.get()
+
+B --> A : 認証要求
+A --> U:
+U -> A: 認証
+A -> B : レスポンスを送信
+B -> S :
+S -> S : 送信内容を検証
+S --> B : 認証完了
+B --> U : 完了
+
+@enduml
+```
+
+## サーバで実現すること
+
+登録と同様に、 2 つの API が必要となります。実装とともに以下に示します。
+
+### 1. challenge の作成と保存
+
+- 認証開始時に challenge を作成し、保存します。
+
+```python
+@bp.route("/generate-authentication-options", methods=["GET"])
+def authenticate_options():
+    options = generate_authentication_options(
+        # ...
+    )
+
+    data = options_to_json_dict(options)
+    session["challenge"] = options.challenge
+    return jsonify(data)
+```
+
+### 2. 送信内容の検証
+
+- クライアントから送信された内容を検証します。
+  - challenge が保存したものと一致すること
+  - origin が期待したものと一致すること
+- レスポンスの内容をパースし、公開鍵で検証します。
+- 認証処理が成功した際には challenge をクリアします。
+
+```python
+@bp.route("/verify-authentication", methods=["POST"])
+def authenticate_verify():
+    body = request.json
+    # 登録済みのユーザー情報を取得
+    # user = ...
+    # 公開鍵情報を取得
+    # public_key = ...
+
+    try:
+        # 検証
+        verification = verify_authentication_response(
+            # ...
+            expected_challenge=session.get("challenge"),
+            expected_origin=EXPECTED_ORIGIN,
+            # ...
+        )
+        session["challenge"] = None
+        session.clear()
+        login_user(user)
+        return jsonify({"status": "ok", "verified": verification.user_verified})
+    except Exception as e:
+        # ...
+```
