@@ -6,6 +6,7 @@ import plantuml from "astro-plantuml";
 
 // https://astro.build/config
 export default defineConfig({
+  base: "/2025-tokai-workshop/",
   integrations: [
     starlight({
       title: "パスワードレス認証の仕組み",
