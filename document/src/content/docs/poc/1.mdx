@@ -37,7 +37,8 @@ uv run main.py`}
 フロントエンドを起動します。
 
 ```bash
-python -m http.server 5173 --directory ./frontend
+cd frontend/1_basic_flow
+python -m http.server 5173 --directory .
 ```
 
 内容は静的ファイルなので、 Python の `http` モジュールなどの簡易的な HTTP サーバであれば同様に動作します。
