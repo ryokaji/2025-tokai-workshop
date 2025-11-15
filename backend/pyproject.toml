@@ -6,6 +6,10 @@ dependencies = [
   "flask>=3.1",
   "flask-cors>=6.0.1",
   "flask-login>=0.6.3",
+  "mypy>=1.18.2",
   "python-dotenv>=1.2.1",
   "webauthn>=2.7.0",
 ]
+
+[tool.mypy]
+ignore_missing_imports = true
