@@ -1,0 +1,36 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dir:
+          - 1_basic_flow
+          - 2_user_auth
+
+    steps:
+      - uses: actions/checkout@v5
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ${{ matrix.dir }}
+
+      - name: Build the project
+        run: npm run build
+        working-directory: ${{ matrix.dir }}
+
+      - name: Upload release assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.dir }}
+          path: ${{ matrix.dir }}/dist/**/*
