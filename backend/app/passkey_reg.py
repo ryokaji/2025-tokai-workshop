@@ -1,7 +1,7 @@
 import os
 import traceback
 
-from app.model import User
+from app.users import User
 from flask import Blueprint, jsonify, request, session
 from flask_login import login_required
 from webauthn.helpers import options_to_json_dict
@@ -55,15 +55,14 @@ def register_verify():
             require_user_verification=False,
         )
 
-        user.credentials.append(
-            {
-                "credential_id": v.credential_id,
-                "public_key": v.credential_public_key,
-                "sign_count": v.sign_count,
-                "transports": body.get("transports", []),
-            }
+        user.update_credential(
+            db.Credential(
+                credential_id=v.credential_id,
+                public_key=v.credential_public_key,
+                sign_count=v.sign_count,
+                transports=body.get("transports", []),
+            )
         )
-        user.save()
         session["challenge"] = None
         return jsonify({"status": "ok", "verified": v.user_verified})
     except Exception as e:

@@ -1,7 +1,7 @@
 import os
 import traceback
 
-from app.model import User
+from app.users import User
 from flask import Blueprint, jsonify, request, session
 from flask_login import login_user
 from webauthn.authentication.generate_authentication_options import (
