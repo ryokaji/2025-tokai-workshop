@@ -3,7 +3,15 @@ title: ソースコードの取得
 description: ""
 ---
 
-import { Code, TabItem, Tabs } from "@astrojs/starlight/components";
+import {
+  Card,
+  CardGrid,
+  Code,
+  FileTree,
+  LinkCard,
+  TabItem,
+  Tabs,
+} from "@astrojs/starlight/components";
 
 ## ソースコードの取得
 
@@ -15,6 +23,8 @@ cd 2025-tokai-workshop
 ```
 
 ## セットアップ
+
+必要なパッケージを取得してください。 pip および uv のいずれでも構いません。
 
 <Tabs>
   <TabItem label="pip">
@@ -33,3 +43,53 @@ source .venv/bin/activate`}
     ></Code>
   </TabItem>
 </Tabs>
+
+## クライアントの取得
+
+ブラウザで動作する事前ビルドされたクライアントが用意されています。いくつかの方法を提示しますので、いずれかの方法で取得してください。
+
+<Tabs>
+  <TabItem label="curl">
+    <Code
+      lang="bash"
+      code={`curl -Ls https://github.com/ryokaji/2025-tokai-workshop/releases/latest/download/1_basic_flow.zip --output 1_basic_flow.zip
+curl -Ls https://github.com/ryokaji/2025-tokai-workshop/releases/latest/download/2_user_auth.zip --output 2_user_auth.zip
+unzip 1_basic_flow.zip -d frontend/1_basic_flow
+unzip 2_user_auth.zip -d frontend/2_user_auth`}
+    ></Code>
+  </TabItem>
+  <TabItem label="wget">
+    <Code
+      lang="bash"
+      code={`wget -q https://github.com/ryokaji/2025-tokai-workshop/releases/latest/download/1_basic_flow.zip
+wget -q https://github.com/ryokaji/2025-tokai-workshop/releases/latest/download/2_user_auth.zip
+unzip 1_basic_flow.zip -d frontend/1_basic_flow
+unzip 2_user_auth.zip -d frontend/2_user_auth`}
+    ></Code>
+  </TabItem>
+  <TabItem label="手動">
+    以下の各リンクをクリックして ZIP ファイルをダウンロード、展開してください。
+    <CardGrid>
+      <LinkCard
+        title="1_basic_flow.zip"
+        href="https://github.com/ryokaji/2025-tokai-workshop/releases/latest/download/1_basic_flow.zip"
+      />
+      <LinkCard
+        title="2_user_auth.zip"
+        href="https://github.com/ryokaji/2025-tokai-workshop/releases/latest/download/2_user_auth.zip"
+      />
+    </CardGrid>
+  </TabItem>
+</Tabs>
+
+資料では、以下のように `foo/bar` ディレクトリ配下に展開されている前提とします。
+
+<FileTree>
+- frontend
+  - 1_basic_flow/ **登録・認証それぞれを単体で動作させるクライアント**
+  - 2_user_auth/ **ログイン・ユーザ管理と連動するクライアント**
+- backend/
+- docs/
+- document/
+
+</FileTree>

@@ -7,26 +7,43 @@ hero:
   tagline: パスキー認証 (FIDO2認証) におけるサーバサイド処理の解説と簡単なサービスを作成するワークショップです。
   actions:
     - text: はじめる
-      link: /
+      link: /2025-tokai-workshop/introduction/1
       icon: right-arrow
 # sidebar:
 #   hidden: false
 ---
 
-import { Card } from "@astrojs/starlight/components";
+import { Aside, Card, CardGrid, LinkCard } from "@astrojs/starlight/components";
 
-## リポジトリ
+## Information
 
-![リポジトリ](../../assets/repo-url.png)
+<Aside>
+本資料は PyCon mini Tokai 2025にて開催されたワークショップの資料の改変版となります。
+
+独力で学習・閲覧されるケースを踏まえ、より理解しやすくすることを目的に一部手順の変更や補足の説明の追加といった修正を加えております。
+(ワークショップの内容を大きく変更するものではありません)
+
+</Aside>
 
 ## 公開先情報
 
-本資料は以下の URL で公開されています。
+ワークショップで利用するリポジトリおよび本資料は、以下に公開されています。
 
 アクセスにあたっては、下記の URL へアクセスするか、QR コードを読み取ってください。
 
-<Card title="本資料の公開先">
-  https://ryokaji.github.io/2025-tokai-workshop/
-</Card>
-
-![本資料の公開先](../../assets/site_qrcode.png)
+<CardGrid>
+  <Card
+    title="GitHub リポジトリ"
+    href="https://github.com/ryokaji/2025-tokai-workshop"
+  >
+    https://github.com/ryokaji/2025-tokai-workshop
+    ![リポジトリ](../../assets/repo-url.png)
+  </Card>
+  <Card
+    title="本資料の公開先"
+    href="https://ryokaji.github.io/2025-tokai-workshop/"
+  >
+    https://ryokaji.github.io/2025-tokai-workshop/
+    ![本資料の公開先](../../assets/site_qrcode.png)
+  </Card>
+</CardGrid>
