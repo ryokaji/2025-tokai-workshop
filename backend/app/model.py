@@ -1,55 +1,51 @@
-# User class for flask_login
-from base64 import urlsafe_b64decode
-
-from app.db import save_userdb, userdb
-from flask_login import UserMixin
+from base64 import urlsafe_b64decode, urlsafe_b64encode
+from dataclasses import dataclass
+from typing import List, Optional, TypedDict
 
 
-def _decode_public_key(pubkey_str: str) -> bytes:
-    padding = "=" * (-len(pubkey_str) % 4)
-    return urlsafe_b64decode((pubkey_str + padding))
+class CredentialRecord(TypedDict):
+    credential_id: str
+    public_key: str
+    sign_count: int
+    transports: List[str]
 
 
-# User class for flask_login
-class User(UserMixin):
-    def __init__(self, username, password, credentials=None):
-        self.id = username
-        self.password = password
-        self.credentials = credentials or []
+class UserRecord(TypedDict):
+    password: str
+    credentials: List[CredentialRecord]
 
-    def get_id(self):
-        return self.id
 
-    def save(self):
-        # Insert
-        userdb[self.id] = {
-            "password": self.password,
-            "credentials": self.credentials,
+@dataclass
+class Credential:
+    credential_id: bytes
+    public_key: bytes
+    sign_count: int
+    transports: Optional[List[str]]
+
+    def to_dict(self) -> dict:
+        """Return a JSON-serializable dict; bytes fields are urlsafe-base64 encoded w/o padding."""
+
+        def _b64_no_pad(b: bytes) -> str:
+            return urlsafe_b64encode(b).rstrip(b"=").decode("ascii")
+
+        return {
+            "credential_id": _b64_no_pad(self.credential_id),
+            "public_key": _b64_no_pad(self.public_key),
+            "sign_count": self.sign_count,
+            "transports": self.transports,
         }
 
-        save_userdb()
-
-    def get_pubkey(self, credential_id):
-        for cred in self.credentials:
-            if cred["credential_id"] == credential_id:
-                return _decode_public_key(cred["public_key"])
-        return None
-
     @staticmethod
-    def get_by_id(user_id):
-        user = userdb.get(user_id)
-        if user:
-            return User(user_id, user["password"], user["credentials"])
-        return None
+    def from_dict(d: CredentialRecord) -> "Credential":
+        """Create a Credential from a dict (assuming produced by to_dict)."""
 
-    # SELECT credential.credential_id FROM user
-    # INNER JOIN credential ON user.id = credential.user_id
-    # find the user who has
-    #   1. credentials related to the user are not empty
-    #   2. at least 1 credential, credential_id matches request body's id (credential id)
-    @staticmethod
-    def find_user_by_credential_id(credential_id):
-        for user_id, user in userdb.items():
-            for cred in user.get("credentials", []):
-                if cred["credential_id"] == credential_id:
-                    return User(user_id, user["password"], user["credentials"])
+        def _decode_b64(s: str) -> bytes:
+            s_p = s + "=" * (-len(s) % 4)
+            return urlsafe_b64decode(s_p)
+
+        return Credential(
+            credential_id=_decode_b64(d["credential_id"]),
+            public_key=_decode_b64(d["public_key"]),
+            sign_count=int(d["sign_count"]),
+            transports=d.get("transports"),
+        )

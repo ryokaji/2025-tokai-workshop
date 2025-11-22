@@ -3,7 +3,7 @@ import os
 
 from app import login, passkey_auth, passkey_reg, users
 from app.db import save_userdb
-from app.model import User
+from app.users import User
 from flask import Flask
 from flask_cors import CORS
 from flask_login import LoginManager

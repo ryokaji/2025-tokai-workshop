@@ -1,4 +1,4 @@
-from app.model import User
+from app.users import User
 from flask import Blueprint, jsonify, request
 from flask_login import (
     login_user,
