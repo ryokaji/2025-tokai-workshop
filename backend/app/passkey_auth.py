@@ -24,14 +24,17 @@ bp = Blueprint("auth", __name__)
 # 認証オプション生成
 @bp.route("/generate-authentication-options", methods=["GET"])
 def authenticate_options():
-    options = generate_authentication_options(
-        rp_id=RP_ID,
-        user_verification=UserVerificationRequirement.PREFERRED,
-    )
-
-    data = options_to_json_dict(options)
-    session["challenge"] = options.challenge
-    return jsonify(data)
+    try:
+        options = generate_authentication_options(
+            rp_id=RP_ID,
+            user_verification=UserVerificationRequirement.PREFERRED,
+        )
+        data = options_to_json_dict(options)
+        session["challenge"] = options.challenge
+        return jsonify(data)
+    except Exception as e:
+        print("error: with", e)
+        return jsonify({"status": "failed", "error": str(e)}), 400
 
 
 # 認証レスポンス検証
@@ -51,7 +54,7 @@ def authenticate_verify():
         return jsonify({"error": "No credential for user with this site"}), 404
 
     try:
-        verification = verify_authentication_response(
+        v = verify_authentication_response(
             credential=body,
             expected_challenge=session.get("challenge"),
             expected_rp_id=RP_ID,
@@ -63,7 +66,7 @@ def authenticate_verify():
         session["challenge"] = None
         session.clear()
         login_user(user)
-        return jsonify({"status": "ok", "verified": verification.user_verified})
+        return jsonify({"status": "ok", "verified": v.user_verified})
     except Exception as e:
         traceback.print_exc()
         return jsonify({"status": "failed", "error": str(e)}), 400

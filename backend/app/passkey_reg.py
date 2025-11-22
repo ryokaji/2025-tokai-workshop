@@ -1,6 +1,7 @@
 import os
 import traceback
 
+import app.db as db
 from app.users import User
 from flask import Blueprint, jsonify, request, session
 from flask_login import login_required
@@ -31,7 +32,6 @@ def register_options():
             user_name=user.get_id(),
         )
         data = options_to_json_dict(options)
-
         session["challenge"] = options.challenge
         return jsonify(data)
     except Exception as e:
