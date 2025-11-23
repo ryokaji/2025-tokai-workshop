@@ -3,6 +3,8 @@ title: 認証処理のシーケンス
 description: ""
 ---
 
+import { FileTree } from "@astrojs/starlight/components";
+
 ## シーケンス
 
 以下に認証処理の概要を示します。登録時の処理とおおまかな流れは似ていることがわかります。
@@ -36,7 +38,24 @@ B --> U : 完了
 
 ## サーバで実現すること
 
-登録と同様に、 2 つの API が必要となります。実装とともに以下に示します。
+登録と同様に、 2 つの API が必要となります。 `backend/app/passkey_auth.py` の実装を交えながら、先ほどと同様にサーバで処理すべき内容を示していきます。
+
+<FileTree>
+- backend/
+    - app/
+        - db.py
+        - login.py
+        - model.py
+        - **passkey_auth.py**
+        - passkey_reg.py
+        - users.py
+    - .env
+    - main.py
+    - poc.py
+    - pyproject.toml
+    - ...
+
+</FileTree>
 
 ### 1. challenge の作成と保存
 
@@ -73,7 +92,7 @@ def authenticate_verify():
 
     try:
         # 検証
-        verification = verify_authentication_response(
+        v = verify_authentication_response(
             # ...
             expected_challenge=session.get("challenge"),
             expected_origin=EXPECTED_ORIGIN,
@@ -81,8 +100,9 @@ def authenticate_verify():
         )
         session["challenge"] = None
         session.clear()
-        login_user(user)
-        return jsonify({"status": "ok", "verified": verification.user_verified})
+        # 特定したユーザの認証を完了
+        # login_user(user)
+        return jsonify({"status": "ok", "verified": v.user_verified})
     except Exception as e:
         # ...
 ```
