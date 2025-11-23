@@ -36,14 +36,15 @@ Flask-Login を利用して下記のように実装例を紹介します。
 def authenticate_verify():
     body = request.json
     # ...
+
     try:
-        verification = verify_authentication_response(
+        v = verify_authentication_response(
             # ...
         )
         session["challenge"] = None
         session.clear()
 +        login_user(user)
-        return jsonify({"status": "ok", "verified": verification.user_verified})
+        return jsonify({"status": "ok", "verified": v.user_verified})
     except Exception as e:
         # ...
 ```

@@ -37,10 +37,22 @@ uv run main.py`}
 
 フロントエンドを起動します。
 
-```bash
-cd frontend/2_user_auth
-python -m http.server 5173 --directory .
-```
+<Tabs>
+  <TabItem label="default">
+    <Code
+      lang="bash"
+      code={`cd frontend/2_user_auth
+python -m http.server 5173 --directory .`}
+    ></Code>
+  </TabItem>
+  <TabItem label="uv">
+    <Code
+      lang="bash"
+      code={`cd frontend/2_user_auth
+uv run -m http.server 5173 --directory .`}
+    ></Code>
+  </TabItem>
+</Tabs>
 
 先ほどと同様にブラウザで [http://localhost:5173](http://localhost:5173) にアクセスします。
 

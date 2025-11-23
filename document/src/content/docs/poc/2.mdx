@@ -3,6 +3,8 @@ title: 登録処理のシーケンス
 description: ""
 ---
 
+import { FileTree } from "@astrojs/starlight/components";
+
 ## シーケンス
 
 以下に登録処理の概要を示します。
@@ -37,7 +39,24 @@ B --> U : 完了
 
 ## サーバで実現すること
 
-実装する API は 2 つあります。実装とともに以下に示します。
+実装する API は 2 つあります。 `backend/app/passkey_reg.py` の実装を交えながら、サーバで処理すべき内容を示していきます。
+
+<FileTree>
+- backend/
+    - app/
+        - db.py
+        - login.py
+        - model.py
+        - passkey_auth.py
+        - **passkey_reg.py**
+        - users.py
+    - ...
+    - main.py
+    - poc.py
+    - pyproject.toml
+    - ...
+
+</FileTree>
 
 ### 1. challenge の作成と保存
 
@@ -64,7 +83,7 @@ def register_options():
 - クライアントから送信された内容を検証します。
   - challenge が保存したものと一致すること
   - origin が期待したものと一致すること
-- `attestationObject` をパースし、公開鍵を取得・保存します。
+- attestation をパースし、公開鍵を取得・保存します。
   - 公開鍵を含む署名付きデータと理解してください。
 - 認証処理が成功した際には challenge をクリアします。
 
@@ -74,6 +93,7 @@ def register_verify():
     body = request.json
     # 登録済みのユーザー情報を取得
     # user = ...
+
     try:
         # 検証
         v = verify_registration_response(

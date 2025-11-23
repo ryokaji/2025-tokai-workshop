@@ -7,6 +7,7 @@ import {
   Aside,
   Card,
   Code,
+  FileTree,
   TabItem,
   Tabs,
 } from "@astrojs/starlight/components";
@@ -15,33 +16,58 @@ import {
 
 まずはローカル環境で動作を確認してみましょう。
 
-WebAuthn サーバを起動します。
+環境変数を設定します。 `backend/.env` ファイルを作成し、以下の内容を記述してください。
+
+```
+RP_ID = "localhost"
+EXPECTED_ORIGIN = "http://localhost:5173"
+```
+
+あるいは、同梱している `backend/.env.example` をリネームしてください。
+
+<FileTree>
+- backend/
+    - **.env.example**
+
+</FileTree>
+
+ファイルを作成したら、 WebAuthn サーバを起動します。
 
 <Tabs>
   <TabItem label="pip">
     <Code
       lang="bash"
       code={`cd backend
-python main.py`}
+python poc.py`}
     ></Code>
   </TabItem>
   <TabItem label="uv">
     <Code
       lang="bash"
       code={`cd backend
-uv run main.py`}
+uv run poc.py`}
     ></Code>
   </TabItem>
 </Tabs>
 
-フロントエンドを起動します。
+Python 標準ライブラリに同梱されている `http.server` を利用し、フロントエンドを起動します。
 
-```bash
-cd frontend/1_basic_flow
-python -m http.server 5173 --directory .
-```
-
-内容は静的ファイルなので、 Python の `http` モジュールなどの簡易的な HTTP サーバであれば同様に動作します。
+<Tabs>
+  <TabItem label="default">
+    <Code
+      lang="bash"
+      code={`cd frontend/1_basic_flow
+python -m http.server 5173 --directory .`}
+    ></Code>
+  </TabItem>
+  <TabItem label="uv">
+    <Code
+      lang="bash"
+      code={`cd frontend/1_basic_flow
+uv run -m http.server 5173 --directory .`}
+    ></Code>
+  </TabItem>
+</Tabs>
 
 ブラウザで [http://localhost:5173](http://localhost:5173) にアクセスします。
 ページが表示されていれば OK です。
@@ -55,6 +81,11 @@ Chrome からパスキーの作成が求められるので、認証鍵を保存�
 ドメインごとに保存した認証情報を確認することができます。
 
 期待動作として、 `localhost` ドメインに対して本日の日付で認証情報が保存されていることが確認できます。
+
+<Aside>
+  `poc.py`
+  の実装では、メモリ上に認証情報を保存しています。サーバを再起動ないし終了すると、登録した認証情報は失われます。
+</Aside>
 
 ## 認証処理の実行
 

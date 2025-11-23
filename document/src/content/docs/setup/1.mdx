@@ -85,11 +85,15 @@ unzip 2_user_auth.zip -d frontend/2_user_auth`}
 資料では、以下のように `foo/bar` ディレクトリ配下に展開されている前提とします。
 
 <FileTree>
-- frontend
-  - 1_basic_flow/ **登録・認証それぞれを単体で動作させるクライアント**
-  - 2_user_auth/ **ログイン・ユーザ管理と連動するクライアント**
+- .github/workflows/
+- 1_basic_flow/
+- 2_user_auth/
 - backend/
 - docs/
 - document/
+- frontend/
+  - **1_basic_flow/** **登録・認証それぞれを単体で動作させるクライアント**
+  - **2_user_auth/** **ログイン・ユーザ管理と連動するクライアント**
+- .gitignore
 
 </FileTree>
